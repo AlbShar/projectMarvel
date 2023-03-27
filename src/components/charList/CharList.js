@@ -6,6 +6,12 @@ import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
 
 class CharList extends Component {
+
+  constructor(props) {
+    super(props);
+    this.onSetId = this.props.onSetId;
+  }
+
   state = {
     characters: [],
     loading: true,
@@ -28,6 +34,8 @@ class CharList extends Component {
       .catch(this.onError);
   }
 
+  
+
   renderItems(arrayItems) {
     const characterItem = arrayItems.map((character) => {
       const styleEmptyImg = character.thumbnail.includes("image_not_available")
@@ -35,7 +43,7 @@ class CharList extends Component {
         : null;
 
       return (
-        <li className="char__item" key={character.id}>
+        <li className="char__item" id={character.id} key={character.id} onClick={() => this.onSetId(character.id)}>
           <img
             src={`${character.thumbnail}`}
             alt={character.name}

@@ -24,6 +24,7 @@ class RandomChar extends Component {
   }
 
   updateCharg = () => {
+    this.setState({loading: true});
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
     this.marvelService.getCharacter(id).then(this.onChatLoaded).catch(this.onError);
   };
