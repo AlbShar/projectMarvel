@@ -1,6 +1,6 @@
 # Getting Started with Create React App
 
-Use --openssl-legacy-provider in package.json in scripts start
+Use 'react-scripts --openssl-legacy-provider start' in package.json in scripts start
 
 ## Available Scripts
 
