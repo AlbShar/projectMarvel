@@ -1,5 +1,4 @@
 import "./charInfo.scss";
-import thor from "../../resources/img/thor.jpeg";
 import { Component } from "react";
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
@@ -7,9 +6,7 @@ import ErrorMessage from "../errorMessage/errorMessage";
 import Skeleton from "../skeleton/Skeleton";
 
 class CharInfo extends Component {
-  constructor(props) {
-    super(props);
-  }
+
 
   state = {
     char: null,
