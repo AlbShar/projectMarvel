@@ -5,6 +5,7 @@ import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
 import Skeleton from "../skeleton/Skeleton";
 
+
 class CharInfo extends Component {
 
 
