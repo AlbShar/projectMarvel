@@ -3,11 +3,12 @@ import { Component } from "react";
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
+import PropTypes from 'prop-types';
 
 class CharList extends Component {
   constructor(props) {
     super(props);
-    this.onSetId = this.props.onSetId;
+    this.onCharSelected = this.props.onCharSelected;
   }
 
   state = {
@@ -15,7 +16,7 @@ class CharList extends Component {
     loading: true,
     error: false,
     newItemsLoading: false,
-    offset: 1550,
+    offset: 210,
     charEnded: false
   };
 
@@ -66,7 +67,7 @@ class CharList extends Component {
           className="char__item"
           id={character.id}
           key={character.id}
-          onClick={() => this.onSetId(character.id)}
+          onClick={() => this.onCharSelected(character.id)}
         >
           <img
             src={`${character.thumbnail}`}
@@ -101,5 +102,9 @@ class CharList extends Component {
     );
   }
 }
+
+CharList.propTypes = {
+  onCharSelected: PropTypes.func.isRequired
+};
 
 export default CharList;

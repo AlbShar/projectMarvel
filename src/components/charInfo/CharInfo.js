@@ -4,10 +4,10 @@ import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
 import Skeleton from "../skeleton/Skeleton";
-
+import PropTypes from 'prop-types'; 
 
 class CharInfo extends Component {
-
+  
 
   state = {
     char: null,
@@ -111,4 +111,10 @@ const ComicsInfo = ({ comics }) => {
     </>
   );
 };
+
+
+CharInfo.propTypes = {
+  id: PropTypes.number
+};
+
 export default CharInfo;
