@@ -40,12 +40,27 @@ class CharList extends Component {
     this.setState({ loading: false, error: true });
   };
 
+  itemsRef = [];
+  setItemRef = elem => {
+    this.itemsRef.push(elem);
+  }
   componentDidMount() {
     this.onRequest();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.myRef !== this.myRef) {
+      console.log('done')
+    }
+  }
+
   onCharListLoading = () => {
     this.setState({ newItemsLoading: true });
+  };
+  
+  onFocutItem = (i) => {
+    this.itemsRef.forEach(item => item.classList.remove("char__item_selected"));
+    this.itemsRef[i].classList.add('char__item_selected');
   };
 
   onRequest = (offset) => {
@@ -57,7 +72,7 @@ class CharList extends Component {
   };
 
   renderItems(arrayItems) {
-    const characterItem = arrayItems.map((character) => {
+    const characterItem = arrayItems.map((character, index) => {
       const styleEmptyImg = character.thumbnail.includes("image_not_available")
         ? { objectFit: "contain" }
         : null;
@@ -66,8 +81,14 @@ class CharList extends Component {
         <li
           className="char__item"
           id={character.id}
+          ref={this.setItemRef}
           key={character.id}
-          onClick={() => this.onCharSelected(character.id)}
+          onClick={() => {
+            this.onCharSelected(character.id);
+            this.onFocutItem(index)
+          }}
+          tabIndex={0}
+          
         >
           <img
             src={`${character.thumbnail}`}
@@ -93,7 +114,11 @@ class CharList extends Component {
         {errorMessage}
         {spinner}
         {content}
-        <button className="button button__main button__long" style={{display: charEnded ? 'none' : 'block'}} onClick={() => this.onRequest(offset)} disabled={newItemsLoading}>
+        <button 
+            className="button button__main button__long" 
+            style={{display: charEnded ? 'none' : 'block'}} 
+            onClick={() => this.onRequest(offset)} 
+            disabled={newItemsLoading}>
           <div className="inner">
             load more
           </div>
@@ -104,7 +129,7 @@ class CharList extends Component {
 }
 
 CharList.propTypes = {
-  onCharSelected: PropTypes.func.isRequired
+  onCharSelected: PropTypes.func.isRequired,
 };
 
 export default CharList;
