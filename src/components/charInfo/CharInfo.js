@@ -1,54 +1,38 @@
 import "./charInfo.scss";
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
 import Skeleton from "../skeleton/Skeleton";
 import PropTypes from 'prop-types'; 
 
-class CharInfo extends Component {
-  
+const CharInfo = (props) => {
+  const [char, setChar] = useState(null);
+  const {error, loading, getCharacter, clearError} = MarvelService();
 
-  state = {
-    char: null,
-    loading: false,
-    error: false,
+  const skeleton = char || loading || error ? null : <Skeleton />;
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error || !char) ? <View char={char} /> : null;
+
+
+  const onChatLoaded = (char) => {
+    setChar(char);
   };
 
-  marvelService = new MarvelService();
 
-  onChatLoaded = (char) => {
-    this.setState({ char, loading: false });
-  };
-
-  onError = () => {
-    this.setState({ loading: false, error: true });
-  };
-
-  updateCharg = () => {
-    if (!this.props.id) {
+  const updateCharg = () => {
+    if (!props.id) {
       return;
     }
-    this.setState({ loading: true });
-    this.marvelService
-      .getCharacter(this.props.id)
-      .then(this.onChatLoaded)
-      .catch(this.onError);
+    clearError();
+    getCharacter(props.id).then(onChatLoaded)
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.id !== this.props.id) {
-      this.updateCharg();
-    }
-  }
+  useEffect(() => {
+    updateCharg()
+  }, [props.id])
 
-  render() {
-    const { char, loading, error } = this.state;
-
-    const skeleton = char || loading || error ? null : <Skeleton />;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error || !char) ? <View char={char} /> : null;
 
     return (
       <div className="char__info">
@@ -58,7 +42,6 @@ class CharInfo extends Component {
         {content}
       </div>
     );
-  }
 }
 
 const View = ({ char }) => {
