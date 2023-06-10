@@ -1,8 +1,8 @@
 import AppHeader from "../appHeader/AppHeader";
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import {ComicsPage, MainPage} from "../pages";
+import {ComicsPage, MainPage, Page404, SingleComicPage} from "../pages";
 
 const App = () => {
 
@@ -12,15 +12,12 @@ const App = () => {
         <div className="app">
           <AppHeader />
           <main>
-            <Switch>
-              <Route exact path="/comics">
-              <ComicsPage/>
-              
-              </Route>
-              <Route exact path="/">
-              <MainPage/>
-              </Route>
-            </Switch>
+            <Routes>
+              <Route path="/comics" element={ <ComicsPage/>}/>
+              <Route path="/" element={<MainPage/>}/>
+              <Route path="*" element={<Page404/>}/>
+              <Route path="/comics/:comicId" element={<SingleComicPage/>}/>
+            </Routes>
           </main>
         </div>
       </Router>
