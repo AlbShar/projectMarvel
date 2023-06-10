@@ -8,7 +8,7 @@ const ComicsList = () => {
 
     const {error, loading, getComics} = useMarvelService();
     const [comics, setComics] = useState([]);
-    const [offset, setOffset] = useState(55656);// 55664
+    const [offset, setOffset] = useState(218);// 55664
     const [isNewComicsLoading, setIsNewComicsLoading] = useState(null);
     const [isComicsEnded, setIsComicsEnded] = useState(false);
     const styleButton = isComicsEnded ? {display: 'none'} : {display: 'block'};
