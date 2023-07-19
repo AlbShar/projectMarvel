@@ -6,25 +6,22 @@ import * as Yup from "yup";
 import useMarvelService from "../../services/MarvelService";
 
 const CharSearchForm = () => {
-  const [charName, setCharName] = useState("");
   const [charId, setCharId] = useState("");
   const [isFoundCharacter, setFoundCharacter] = useState(null);
   const { error, loading, getCharacterByName, clearError } = useMarvelService();
 
   const handleResponse = (res) => {
     if (res.data.count) {
-      const charName = res.data.results[0].name;
       const charID = res.data.results[0].id;
 
       setFoundCharacter(true);
-      setCharName(charName);
       setCharId(charID);
     } else {
       setFoundCharacter(false);
     }
   };
 
-  const displayMessage = () => {
+  const displayMessage = (charName) => {
     if (isFoundCharacter) {
       return (
         <div className="char__search-wrapper">
@@ -61,7 +58,7 @@ const CharSearchForm = () => {
         getCharacterByName(values.charName).then(handleResponse);
       }}
     >
-      {({ errors }) => (
+      {({ errors, values }) => (
         <Form className="char__search-form">
           <label className="char__search-label" htmlFor="charName">
             Or find a character by name:
@@ -82,7 +79,7 @@ const CharSearchForm = () => {
             name="charName"
             className="char__search-error"
           />
-          {errors.charName ? null : displayMessage()}
+          {errors.charName ? null : displayMessage(values.charName)}
         </Form>
       )}
     </Formik>

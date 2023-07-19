@@ -16,6 +16,7 @@ import Page404 from "./components/pages/Page404";
 import MainPage from "./components/pages/MainPage";
 import ComicsPage from "./components/pages/ComicsPage";
 import SingleComicPage from "./components/pages/singleComicPage/SingleComicPage";
+import SingleCharacterPage from "./components/pages/SingleCharacterPage/SingleCharacterPage";
 import {
   SwitchTransition,
   CSSTransition,
@@ -37,6 +38,12 @@ const routes = [
     path: "/comics/:comicId",
     name: "SingleComicPage",
     element: <SingleComicPage />,
+    nodeRef: createRef(),
+  },
+  {
+    path: "/:characterId",
+    name: "SingleCharacterPage",
+    element: <SingleCharacterPage />,
     nodeRef: createRef(),
   },
 ];
@@ -65,7 +72,7 @@ function App() {
             <CSSTransition key={location.key} timeout={1300} classNames="fade">
               <Routes location={location}>
                 <Route exact path="/" element={<MainPage />} />
-
+                <Route path="/:characterId" element={<SingleCharacterPage />} />
                 <Route path="/comics" element={<ComicsPage />} />
 
                 <Route path="/comics/:comicId" element={<SingleComicPage />} />
