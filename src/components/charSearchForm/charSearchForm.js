@@ -1,51 +1,53 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./charSearchForm.scss";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage as FormikErrorMessage } from "formik";
 import * as Yup from "yup";
-import useMarvelService from "../../services/MarvelService";
+import MarvelService from "../../services/MarvelService";
 
 const CharSearchForm = () => {
-  const [charId, setCharId] = useState("");
-  const [isFoundCharacter, setFoundCharacter] = useState(null);
-  const { error, loading, getCharacterByName, clearError } = useMarvelService();
+  const [char, setChar] = useState(null);
+  const { loading, error, getCharacterByName, clearError } = MarvelService();
 
-  const handleResponse = (res) => {
-    if (res.data.count) {
-      const charID = res.data.results[0].id;
-
-      setFoundCharacter(true);
-      setCharId(charID);
-    } else {
-      setFoundCharacter(false);
-    }
+  const onCharLoaded = (char) => {
+    setChar(char.data.results)
   };
 
-  const displayMessage = (charName) => {
-    if (isFoundCharacter) {
+  const updateChar = (res) => {
+    
+    clearError();
+    getCharacterByName(res).then(onCharLoaded);
+  };
+
+  const errorMessage = error ? "ERROR" : null;
+  const displayMessage = () => {
+    if (!char) {
+      return null
+    } 
+
+    if (char.length > 0) {
       return (
         <div className="char__search-wrapper">
           <div className="char__search-success">
-            {`There is! Visit ${charName} page`}
+            {`There is! Visit ${char[0].name} page`}
           </div>
 
-          <Link to={`${charId}`} className="button button__secondary">
+          <Link to={`/characters/${char[0].id}`} className="button button__secondary">
             <div className="inner">to page</div>
           </Link>
         </div>
       );
-    } else if (isFoundCharacter === false) {
+    } else if (char.length === 0) {
       return (
         <div className="char__search-error">
           The character was not found. Check the name and try again
         </div>
       );
-    } else {
-      return null;
-    }
+    } 
   };
 
   return (
+    <div className="char__search-form">
     <Formik
       initialValues={{ charName: "" }}
       validationSchema={Yup.object({
@@ -54,12 +56,11 @@ const CharSearchForm = () => {
           .min(3, "Min should be 3 characters ")
           .required("This field is required"),
       })}
-      onSubmit={(values) => {
-        getCharacterByName(values.charName).then(handleResponse);
+      onSubmit={({charName}) => {
+        updateChar(charName)
       }}
     >
-      {({ errors, values }) => (
-        <Form className="char__search-form">
+        <Form >
           <label className="char__search-label" htmlFor="charName">
             Or find a character by name:
           </label>
@@ -70,19 +71,21 @@ const CharSearchForm = () => {
               type="text"
               placeholder="Enter name"
             />
-            <button type="submit" className="button button__main">
+            <button type="submit" className="button button__main" disabled={loading}>
               <div className="inner">find</div>
             </button>
           </div>
-          <ErrorMessage
+          <FormikErrorMessage
             component="div"
             name="charName"
             className="char__search-error"
           />
-          {errors.charName ? null : displayMessage(values.charName)}
         </Form>
-      )}
     </Formik>
+    {errorMessage}
+    {displayMessage()}
+    </div>
+    
   );
 };
 
