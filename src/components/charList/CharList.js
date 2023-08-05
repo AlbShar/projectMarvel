@@ -1,5 +1,5 @@
 import "./charList.scss";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
@@ -10,16 +10,12 @@ const setContent = (process, Component, newItemsLoading) => {
   switch (process) {
     case 'waiting':
       return <Spinner/>;
-      break;
     case 'loading':
       return newItemsLoading ? <Component /> : <Spinner/>;
-      break;
     case 'error':
       return <ErrorMessage />;
-      break;
     case 'confirmed':
       return <Component/>;
-      break;
     default:
       throw new Error('Unexpected process value');
   }
@@ -93,11 +89,15 @@ const CharList = (props) => {
   useEffect(() => {
     onRequest(offset, true);
   }, [])
+
+  const elements = useMemo(() => {
+    return setContent(process, () => renderItems(characters), newItemsLoading)
+  }, [process])
  
     return (
       <div className="char__list">
         
-        {setContent(process, () => renderItems(characters), newItemsLoading)}
+        {elements}
         <button 
             className="button button__main button__long" 
             style={{display: charEnded ? 'none' : 'block'}} 
