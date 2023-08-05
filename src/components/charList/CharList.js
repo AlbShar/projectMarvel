@@ -5,6 +5,27 @@ import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
 import PropTypes from 'prop-types';
 
+const setContent = (process, Component, newItemsLoading) => {
+  console.log(process)
+  switch (process) {
+    case 'waiting':
+      return <Spinner/>;
+      break;
+    case 'loading':
+      return newItemsLoading ? <Component /> : <Spinner/>;
+      break;
+    case 'error':
+      return <ErrorMessage />;
+      break;
+    case 'confirmed':
+      return <Component/>;
+      break;
+    default:
+      throw new Error('Unexpected process value');
+  }
+
+};
+
 const CharList = (props) => {
   const [characters, setCharacters] = useState([]);
   const [newItemsLoading, setNewItemsLoading] = useState(false);
@@ -13,7 +34,7 @@ const CharList = (props) => {
 
   const itemsRef = useRef([]);
 
-  const {error, loading, getAllCharacters} = MarvelService();
+  const { getAllCharacters, process, setProcess} = MarvelService();
   
   const renderItems = (arrayItems) => {
       const characterItem = arrayItems.map((char, index) => {
@@ -47,10 +68,6 @@ const CharList = (props) => {
     
   }
 
-  const view = renderItems(characters);
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading && !newItemsLoading ? <Spinner /> : null;
-
   const onCharactersLoaded = (characters) => {
     let ended = false;
     if (characters.length < 9) {
@@ -70,7 +87,7 @@ const CharList = (props) => {
 
   const onRequest = (offset, initial) => {
     initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
-    getAllCharacters(offset).then(onCharactersLoaded)
+    getAllCharacters(offset).then(onCharactersLoaded).then(() => setProcess('confirmed'))
   };
 
   useEffect(() => {
@@ -79,9 +96,8 @@ const CharList = (props) => {
  
     return (
       <div className="char__list">
-        {errorMessage}
-        {spinner}
-        {view}
+        
+        {setContent(process, () => renderItems(characters), newItemsLoading)}
         <button 
             className="button button__main button__long" 
             style={{display: charEnded ? 'none' : 'block'}} 
